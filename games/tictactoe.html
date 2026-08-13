@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tres en raya</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Tres en raya</h1>
+    <p id="status" class="status">Tú eres X. Tecla 1-9 o clic.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+      <label><input type="checkbox" id="ai" checked> Máquina (O)</label>
+    </div>
+  </header>
+  <main>
+    <div id="board" class="board-3" role="grid" aria-label="Tres en raya"></div>
+  </main>
+  <script src="../js/tictactoe.js"></script>
+  <script>
+    var s = TicTacToe.start();
+    var board = document.getElementById("board");
+    var status = document.getElementById("status");
+    var mark = ["", "X", "O"];
+    function say() {
+      var w = TicTacToe.winner(s.b);
+      if (w === 1) status.textContent = "Ganan X";
+      else if (w === -1) status.textContent = "Ganan O";
+      else if (w === 2) status.textContent = "Tablas";
+      else status.textContent = (s.turn === 1 ? "Juegan X" : "Juegan O") + ". Tecla 1-9 o clic.";
+    }
+    function paint() {
+      board.innerHTML = "";
+      for (var i = 0; i < 9; i++) {
+        var b = document.createElement("button");
+        b.className = "cell";
+        b.type = "button";
+        b.setAttribute("role", "gridcell");
+        b.setAttribute("aria-label", "casilla " + (i + 1) + (s.b[i] ? ", " + mark[s.b[i] === -1 ? 2 : s.b[i]] : ", vacía"));
+        b.textContent = s.b[i] === 1 ? "X" : s.b[i] === -1 ? "O" : "";
+        b.disabled = !!TicTacToe.winner(s.b) || !!s.b[i];
+        b.onclick = (function (i) { return function () { move(i); }; })(i);
+        board.appendChild(b);
+      }
+      say();
+    }
+    function aiTurn() {
+      if (!document.getElementById("ai").checked) return;
+      if (TicTacToe.winner(s.b) || s.turn !== -1) return;
+      var i = TicTacToe.bestMove(s);
+      var n = TicTacToe.play(s, i);
+      if (n) s = n;
+      paint();
+    }
+    function move(i) {
+      var n = TicTacToe.play(s, i);
+      if (!n) return;
+      s = n;
+      paint();
+      setTimeout(aiTurn, 40);
+    }
+    document.getElementById("reset").onclick = function () { s = TicTacToe.start(); paint(); };
+    document.addEventListener("keydown", function (e) {
+      var k = e.key;
+      if (k >= "1" && k <= "9") move(k.charCodeAt(0) - 49);
+    });
+    paint();
+  </script>
+</body>
+</html>

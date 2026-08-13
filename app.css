@@ -1,0 +1,91 @@
+:root {
+  --bg: #f4f1ea;
+  --ink: #1a1a1a;
+  --muted: #4a4a4a;
+  --line: #2c2c2c;
+  --accent: #0b5cab;
+  --light: #f0d9b5;
+  --dark: #b58863;
+  --ok: #0d6b3c;
+  --bad: #9b1c1c;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.4;
+}
+a { color: var(--accent); }
+header, main { max-width: 44rem; margin: 0 auto; padding: 1rem; }
+h1 { font-size: 1.4rem; margin: 0.3rem 0 0.6rem; }
+.bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0.6rem 0; }
+button, .cell {
+  font: inherit;
+  color: var(--ink);
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 4px;
+  min-height: 2.4rem;
+  cursor: pointer;
+}
+button:focus, .cell:focus, a:focus { outline: 3px solid var(--accent); outline-offset: 2px; }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
+.status { min-height: 1.5em; font-weight: 600; }
+.games { list-style: none; padding: 0; margin: 1rem 0; }
+.games a {
+  display: block;
+  padding: 0.85rem 1rem;
+  margin: 0.4rem 0;
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 600;
+}
+.games a:hover { background: #fff8ee; }
+.board-3, .board-8, .board-11 {
+  display: grid;
+  gap: 0;
+  width: min(92vw, 28rem);
+  margin: 0.5rem 0;
+}
+.board-3 { grid-template-columns: repeat(3, 1fr); }
+.board-8 { grid-template-columns: repeat(8, 1fr); }
+.board-11 { grid-template-columns: repeat(11, 1fr); width: min(96vw, 36rem); }
+.cell {
+  aspect-ratio: 1;
+  min-height: 0;
+  border-radius: 0;
+  font-size: clamp(0.7rem, 3.2vw, 1.6rem);
+  padding: 0;
+}
+.board-3 .cell { font-size: clamp(1.6rem, 8vw, 3rem); font-weight: 700; }
+.board-8 .cell { text-shadow: 0 0 3px #fff, 0 1px 0 #fff; }
+.light { background: var(--light); }
+.dark { background: var(--dark); }
+.cell.mark { outline: 3px solid var(--accent); outline-offset: -3px; z-index: 1; }
+.cell.legal { box-shadow: inset 0 0 0 4px var(--ok); }
+.tok {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 78%;
+  height: 78%;
+  border-radius: 50%;
+  font-size: 0.7em;
+  font-weight: 700;
+  color: #fff;
+}
+.tok.y { background: #c48a00; color: #111; }
+.tok.g { background: #0d6b3c; }
+canvas#flappy {
+  display: block;
+  width: min(92vw, 24rem);
+  height: auto;
+  background: #70c5ce;
+  border: 2px solid var(--line);
+}
+.hint { color: var(--muted); font-size: 0.92rem; }

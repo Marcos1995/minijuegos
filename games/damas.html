@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Damas</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Damas</h1>
+    <p id="status" class="status">Blancas abajo. Captura obligatoria.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+      <label><input type="checkbox" id="ai" checked> Máquina (negras)</label>
+    </div>
+  </header>
+  <main>
+    <div id="board" class="board-8" role="grid" aria-label="Tablero de damas"></div>
+    <p class="hint">Clic en ficha y casilla. Multi-salto: clic cada aterrizaje.</p>
+  </main>
+  <script src="../js/damas.js"></script>
+  <script>
+    var s = Damas.start();
+    var prefix = [];
+    var board = document.getElementById("board");
+    var status = document.getElementById("status");
+    function key(p) { return p[0] + "," + p[1]; }
+    function matching(pref) {
+      return Damas.legal(s).filter(function (m) {
+        if (m.path.length < pref.length) return false;
+        for (var i = 0; i < pref.length; i++)
+          if (m.path[i][0] !== pref[i][0] || m.path[i][1] !== pref[i][1]) return false;
+        return true;
+      });
+    }
+    function hops() {
+      var set = {};
+      matching(prefix).forEach(function (m) {
+        if (m.path.length > prefix.length) set[key(m.path[prefix.length])] = 1;
+      });
+      return set;
+    }
+    function say() {
+      var r = Damas.result(s);
+      if (r === 1) status.textContent = "Ganan blancas";
+      else if (r === -1) status.textContent = "Ganan negras";
+      else status.textContent = (s.turn === 1 ? "Juegan blancas" : "Juegan negras") + ". Captura si hay.";
+    }
+    function paint() {
+      var legalH = prefix.length ? hops() : {};
+      var sel = prefix.length ? key(prefix[prefix.length - 1]) : "";
+      board.innerHTML = "";
+      for (var r = 0; r < 8; r++) {
+        for (var c = 0; c < 8; c++) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "cell " + ((r + c) % 2 ? "dark" : "light");
+          var p = s.b[r][c];
+          var k = r + "," + c;
+          if (k === sel) b.classList.add("mark");
+          if (legalH[k]) b.classList.add("legal");
+          b.setAttribute("aria-label", "fila " + (r + 1) + " columna " + (c + 1));
+          if (p) {
+            var t = document.createElement("span");
+            t.className = "tok " + (p > 0 ? "y" : "g");
+            t.textContent = Math.abs(p) === 2 ? "D" : "";
+            b.appendChild(t);
+          }
+          b.onclick = (function (r, c) { return function () { click(r, c); }; })(r, c);
+          board.appendChild(b);
+        }
+      }
+      say();
+    }
+    function aiTurn() {
+      if (!document.getElementById("ai").checked) return;
+      if (Damas.result(s) || s.turn !== -1) return;
+      status.textContent = "Piensa…";
+      setTimeout(function () {
+        var path = Damas.bestMove(s);
+        if (path) s = Damas.applyPath(s, path);
+        prefix = [];
+        paint();
+      }, 30);
+    }
+    function click(r, c) {
+      if (Damas.result(s)) return;
+      if (document.getElementById("ai").checked && s.turn === -1) return;
+      if (!prefix.length) {
+        var p = s.b[r][c];
+        if (!p || (p > 0) !== (s.turn > 0)) return;
+        prefix = [[r, c]];
+        paint();
+        return;
+      }
+      var np = prefix.concat([[r, c]]);
+      var ms = matching(np);
+      if (!ms.length) {
+        prefix = [];
+        paint();
+        return;
+      }
+      var done = ms.filter(function (m) { return m.path.length === np.length; });
+      if (done.length) {
+        s = Damas.applyPath(s, done[0].path);
+        prefix = [];
+        paint();
+        setTimeout(aiTurn, 40);
+        return;
+      }
+      prefix = np;
+      paint();
+    }
+    document.getElementById("reset").onclick = function () { s = Damas.start(); prefix = []; paint(); };
+    paint();
+  </script>
+</body>
+</html>

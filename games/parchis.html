@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parchís</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Parchís</h1>
+    <p id="status" class="status">Amarillo vs verde. Sales con 5. 6 = turno extra.</p>
+    <div class="bar">
+      <button type="button" id="roll">Tirar dado</button>
+      <button type="button" id="pass">Pasar</button>
+      <button type="button" id="reset">Nueva partida</button>
+      <label><input type="checkbox" id="ai" checked> Máquina (verde)</label>
+    </div>
+  </header>
+  <main>
+    <div id="board" class="board-11" role="grid" aria-label="Tablero de parchís"></div>
+    <p class="hint">Clic en tu ficha para moverla el dado. Casillas 0, 10, 20 y 30 son seguras.</p>
+  </main>
+  <script src="../js/parchis.js"></script>
+  <script>
+    var s = Parchis.start();
+    var track = Parchis.trackCells();
+    var board = document.getElementById("board");
+    var status = document.getElementById("status");
+    var who = ["Amarillo", "Verde"];
+    function cellMap() {
+      var map = {};
+      function add(rc, who, i) {
+        var k = rc[0] + "," + rc[1];
+        if (!map[k]) map[k] = [];
+        map[k].push({ p: who, i: i });
+      }
+      for (var p = 0; p < 2; p++) {
+        for (var i = 0; i < 4; i++) {
+          var pos = s.tok[p][i];
+          if (pos < 0) add(Parchis.casaCell(p, i), p, i);
+          else if (pos === 200) add(Parchis.stretchCell(p, 4), p, i);
+          else if (pos >= 100) add(Parchis.stretchCell(p, pos - 100), p, i);
+          else add(track[pos], p, i);
+        }
+      }
+      return map;
+    }
+    function isSafe(r, c) {
+      for (var i = 0; i < 40; i++) {
+        if (track[i][0] === r && track[i][1] === c && (i === 0 || i === 10 || i === 20 || i === 30)) return true;
+      }
+      return false;
+    }
+    function onTrack(r, c) {
+      for (var i = 0; i < 40; i++) if (track[i][0] === r && track[i][1] === c) return true;
+      return r >= 1 && r <= 9 && c === 5;
+    }
+    function say() {
+      if (s.winner >= 0) { status.textContent = "Gana " + who[s.winner]; return; }
+      var t = who[s.turn];
+      if (!s.die) status.textContent = t + " tira.";
+      else {
+        var o = Parchis.options(s);
+        status.textContent = t + " sacó " + s.die + (o.length ? ". Elige ficha." : ". Sin movimientos: pasa (el 6 conserva turno).");
+      }
+    }
+    function paint() {
+      var map = cellMap();
+      var opts = Parchis.options(s);
+      board.innerHTML = "";
+      for (var r = 0; r < 11; r++) {
+        for (var c = 0; c < 11; c++) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "cell " + (onTrack(r, c) ? ((r + c) % 2 ? "dark" : "light") : "light");
+          if (isSafe(r, c)) b.style.boxShadow = "inset 0 0 0 3px #0b5cab";
+          var here = map[r + "," + c] || [];
+          here.forEach(function (t) {
+            var sp = document.createElement("span");
+            sp.className = "tok " + (t.p ? "g" : "y");
+            sp.textContent = (t.i + 1);
+            b.appendChild(sp);
+            if (t.p === s.turn && opts.indexOf(t.i) >= 0) b.classList.add("legal");
+          });
+          b.setAttribute("aria-label", "fila " + r + " columna " + c);
+          b.onclick = (function (here) {
+            return function () {
+              if (!here.length) return;
+              for (var i = 0; i < here.length; i++) {
+                if (here[i].p === s.turn && opts.indexOf(here[i].i) >= 0) {
+                  moveTok(here[i].i);
+                  return;
+                }
+              }
+            };
+          })(here);
+          board.appendChild(b);
+        }
+      }
+      say();
+    }
+    function afterHuman() {
+      paint();
+      if (document.getElementById("ai").checked && s.turn === 1 && s.winner < 0) setTimeout(aiTurn, 50);
+    }
+    function moveTok(i) {
+      var n = Parchis.applyMove(s, i);
+      if (!n) return;
+      s = n;
+      afterHuman();
+    }
+    function aiTurn() {
+      if (!document.getElementById("ai").checked || s.turn !== 1 || s.winner >= 0) return;
+      if (!s.die) {
+        s = Parchis.roll(s);
+        paint();
+        setTimeout(aiTurn, 280);
+        return;
+      }
+      var i = Parchis.greedy(s);
+      if (i < 0) s = Parchis.pass(s) || s;
+      else s = Parchis.applyMove(s, i) || s;
+      paint();
+      if (s.turn === 1 && s.winner < 0) setTimeout(aiTurn, 280);
+    }
+    document.getElementById("roll").onclick = function () {
+      if (s.winner >= 0 || s.die) return;
+      if (document.getElementById("ai").checked && s.turn === 1) return;
+      s = Parchis.roll(s);
+      paint();
+    };
+    document.getElementById("pass").onclick = function () {
+      var n = Parchis.pass(s);
+      if (!n) return;
+      s = n;
+      afterHuman();
+    };
+    document.getElementById("reset").onclick = function () { s = Parchis.start(); paint(); };
+    paint();
+  </script>
+</body>
+</html>

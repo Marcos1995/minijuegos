@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flappy</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Flappy</h1>
+    <p id="status" class="status" aria-live="polite">Espacio, clic o toque para aletear.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <canvas id="flappy" width="320" height="480" role="img" aria-label="Flappy Bird"></canvas>
+  </main>
+  <script src="../js/flappy.js"></script>
+  <script>
+    var canvas = document.getElementById("flappy");
+    var ctx = canvas.getContext("2d");
+    var status = document.getElementById("status");
+    var s = Flappy.start();
+    var flap = false;
+    function draw() {
+      ctx.fillStyle = "#70c5ce";
+      ctx.fillRect(0, 0, Flappy.W, Flappy.H);
+      ctx.fillStyle = "#0d6b3c";
+      s.pipes.forEach(function (p) {
+        ctx.fillRect(p.x, 0, Flappy.PW, p.gap);
+        ctx.fillRect(p.x, p.gap + Flappy.GAP, Flappy.PW, Flappy.H - p.gap - Flappy.GAP);
+      });
+      ctx.fillStyle = "#c48a00";
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 12, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#1a1a1a";
+      ctx.font = "20px sans-serif";
+      ctx.fillText(String(s.score), 12, 28);
+      if (s.dead) {
+        ctx.fillText("Fin. Espacio o clic para reiniciar.", 18, Flappy.H / 2);
+      }
+    }
+    function tick() {
+      s = Flappy.step(s, flap);
+      flap = false;
+      status.textContent = s.dead ? ("Fin. Puntos: " + s.score + ". Espacio o clic reinicia.") : ("Puntos: " + s.score);
+      draw();
+      if (!s.dead) requestAnimationFrame(tick);
+    }
+    function doFlap(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      if (s.dead) { s = Flappy.start(); requestAnimationFrame(tick); return; }
+      flap = true;
+    }
+    document.addEventListener("keydown", function (e) {
+      if (e.code === "Space" || e.key === " ") { e.preventDefault(); doFlap(); }
+    });
+    canvas.addEventListener("pointerdown", doFlap);
+    document.getElementById("reset").onclick = function () {
+      s = Flappy.start();
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  </script>
+</body>
+</html>

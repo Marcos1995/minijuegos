@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>check</title>
+</head>
+<body>
+  <pre id="out">…</pre>
+  <script src="js/tictactoe.js"></script>
+  <script src="js/damas.js"></script>
+  <script src="js/ajedrez.js"></script>
+  <script src="js/parchis.js"></script>
+  <script src="js/flappy.js"></script>
+  <script src="js/check.js"></script>
+  <script>
+    var el = document.getElementById("out");
+    try { el.textContent = runChecks(TicTacToe, Damas, Ajedrez, Parchis, Flappy); }
+    catch (e) { el.textContent = String(e && e.message ? e.message : e); }
+  </script>
+</body>
+</html>

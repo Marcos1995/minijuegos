@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ajedrez</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Ajedrez</h1>
+    <p id="status" class="status">Blancas abajo. Negras = máquina de contar.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+      <label><input type="checkbox" id="ai" checked> Máquina (negras)</label>
+    </div>
+  </header>
+  <main>
+    <div id="board" class="board-8" role="grid" aria-label="Tablero de ajedrez"></div>
+    <p class="hint">Clic origen y destino. Coronación siempre a dama. Enroque: mueve el rey dos casillas.</p>
+  </main>
+  <script src="../js/ajedrez.js"></script>
+  <script>
+    var U = { K: "♔", Q: "♕", R: "♖", B: "♗", N: "♘", P: "♙", k: "♚", q: "♛", r: "♜", b: "♝", n: "♞", p: "♟" };
+    var files = "abcdefgh";
+    var s = Ajedrez.start();
+    var sel = null;
+    var board = document.getElementById("board");
+    var status = document.getElementById("status");
+    function dests() {
+      var set = {};
+      if (!sel) return set;
+      Ajedrez.legal(s).forEach(function (m) {
+        if (m.fr === sel[0] && m.fc === sel[1]) set[m.tr + "," + m.tc] = 1;
+      });
+      return set;
+    }
+    function say() {
+      var st = Ajedrez.status(s);
+      if (st === "mate") status.textContent = s.w ? "Jaque mate. Ganan negras." : "Jaque mate. Ganan blancas.";
+      else if (st === "ahogado") status.textContent = "Ahogado. Tablas.";
+      else status.textContent = (s.w ? "Juegan blancas" : "Juegan negras") + (Ajedrez.inCheck(s, s.w) ? ". Jaque." : ".");
+    }
+    function paint() {
+      var d = dests();
+      board.innerHTML = "";
+      for (var r = 0; r < 8; r++) {
+        for (var c = 0; c < 8; c++) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "cell " + ((r + c) % 2 ? "dark" : "light");
+          if (sel && sel[0] === r && sel[1] === c) b.classList.add("mark");
+          if (d[r + "," + c]) b.classList.add("legal");
+          var p = s.sq[r][c];
+          b.textContent = p === "." ? "" : U[p];
+          b.setAttribute("aria-label", files[c] + (8 - r) + (p !== "." ? " " + p : " vacía"));
+          b.onclick = (function (r, c) { return function () { click(r, c); }; })(r, c);
+          board.appendChild(b);
+        }
+      }
+      say();
+    }
+    function aiTurn() {
+      if (!document.getElementById("ai").checked) return;
+      if (Ajedrez.status(s) !== "ok" || s.w) return;
+      status.textContent = "Piensa…";
+      setTimeout(function () {
+        var m = Ajedrez.bestMove(s);
+        if (m) s = Ajedrez.play(s, m);
+        sel = null;
+        paint();
+      }, 30);
+    }
+    function click(r, c) {
+      if (Ajedrez.status(s) !== "ok") return;
+      if (document.getElementById("ai").checked && !s.w) return;
+      if (!sel) {
+        if (s.sq[r][c] === ".") return;
+        var white = s.sq[r][c] === s.sq[r][c].toUpperCase();
+        if (white !== s.w) return;
+        sel = [r, c];
+        paint();
+        return;
+      }
+      var ms = Ajedrez.legal(s).filter(function (m) {
+        return m.fr === sel[0] && m.fc === sel[1] && m.tr === r && m.tc === c;
+      });
+      sel = null;
+      if (ms.length) {
+        s = Ajedrez.play(s, ms[0]);
+        paint();
+        setTimeout(aiTurn, 40);
+        return;
+      }
+      paint();
+    }
+    document.getElementById("reset").onclick = function () { s = Ajedrez.start(); sel = null; paint(); };
+    paint();
+  </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+---
+description: Minijuegos estáticos HTML — stack, límites y cómo añadir un juego
+alwaysApply: true
+---
+
+# Minijuegos
+
+Sitio estático de minijuegos. Se juega abriendo HTML. Sin build, sin npm, sin frameworks.
+
+## Forma
+
+- Hub: `index.html`. Un archivo por juego en `games/`.
+- Lógica pura en `js/` (sin DOM). El HTML pinta, clica y llama.
+- Estilos compartidos en `app.css`.
+- IA de tablero = minimax/negamax (máquina de contar). Sin redes, sin libros de aperturas.
+- Un check: `check.html` (o `node js/check.js`).
+
+## Al añadir un juego
+
+1. Lógica en `js/nombre.js` exportando un objeto global.
+2. Página en `games/nombre.html` (enlace atrás al hub, teclado o botones con nombre).
+3. Enlace en `index.html`.
+4. Un assert en `js/check.js` si hay reglas no triviales.
+
+## No hacer
+
+- No dependencias nuevas.
+- No backend, cuentas, ranking ni dinero.
+- No reescribir el kit Ponytail (`.cursor/`, `AGENTS.md`).
