@@ -2,28 +2,24 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Tetris</title>
   <link rel="stylesheet" href="../app.css">
 </head>
-<body>
+<body class="play">
   <header>
     <p><a href="../index.html">← Minijuegos</a></p>
     <h1>Tetris</h1>
-    <p id="status" class="status" aria-live="polite">Flechas, arriba rota, espacio cae.</p>
+    <p id="status" class="status" aria-live="polite">Desliza: lados mueven, arriba rota, abajo cae.</p>
     <div class="bar">
       <button type="button" id="reset">Nueva partida</button>
     </div>
   </header>
   <main>
     <canvas class="game" id="cv" width="200" height="400" role="img" aria-label="Tetris"></canvas>
-    <div class="bar keys">
-      <button type="button" id="left">←</button>
-      <button type="button" id="rot">↻</button>
-      <button type="button" id="right">→</button>
-      <button type="button" id="drop">↓↓</button>
-    </div>
+    <p class="hint">Desliza sobre el pozo. Espacio = caída rápida.</p>
   </main>
+  <script src="../js/swipe.js"></script>
   <script src="../js/tetris.js"></script>
   <script>
     var COL = ["#123", "#5ad", "#dd5", "#a5d", "#36c", "#e83", "#5c5", "#d55"];
@@ -60,10 +56,14 @@
       if (e.key === " ") { Tetris.hard(s); e.preventDefault(); }
       draw();
     });
-    document.getElementById("left").onclick = function () { Tetris.move(s, -1); draw(); };
-    document.getElementById("right").onclick = function () { Tetris.move(s, 1); draw(); };
-    document.getElementById("rot").onclick = function () { Tetris.rotate(s); draw(); };
-    document.getElementById("drop").onclick = function () { Tetris.hard(s); draw(); };
+    Swipe.on(cv, function (ev) {
+      if (ev.type !== "swipe") return;
+      if (ev.dir === "L") Tetris.move(s, -1);
+      if (ev.dir === "R") Tetris.move(s, 1);
+      if (ev.dir === "U") Tetris.rotate(s);
+      if (ev.dir === "D") { if (ev.dist > 90) Tetris.hard(s); else Tetris.tick(s); }
+      draw();
+    });
     document.getElementById("reset").onclick = function () { clearTimeout(t); s = Tetris.start(); loop(); };
     loop();
   </script>

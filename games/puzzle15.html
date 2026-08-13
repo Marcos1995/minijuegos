@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Puzzle 15</title>
   <link rel="stylesheet" href="../app.css">
 </head>
-<body>
+<body class="play">
   <header>
     <p><a href="../index.html">← Minijuegos</a></p>
     <h1>Puzzle 15</h1>
@@ -16,8 +16,10 @@
     </div>
   </header>
   <main>
-    <div id="board" class="board-4" role="grid" aria-label="Puzzle 15"></div>
+    <div id="board" class="board-4 puzzle" role="grid" aria-label="Puzzle 15"></div>
+    <p class="hint">Desliza o toca una ficha junto al hueco.</p>
   </main>
+  <script src="../js/swipe.js"></script>
   <script src="../js/puzzle15.js"></script>
   <script>
     var s = Puzzle15.start();
@@ -33,12 +35,28 @@
         b.className = "cell";
         b.textContent = s.a[i] ? String(s.a[i]) : "";
         b.disabled = !s.a[i] || Puzzle15.won(s);
+        if (!s.a[i]) b.classList.add("hole");
         if (legal[i]) b.classList.add("legal");
         b.onclick = (function (i) { return function () { Puzzle15.slide(s, i); paint(); }; })(i);
         board.appendChild(b);
       }
-      status.textContent = Puzzle15.won(s) ? "Ordenado." : "Clic en una ficha junto al hueco.";
+      status.textContent = Puzzle15.won(s) ? "Ordenado." : "Desliza o toca una ficha junto al hueco.";
     }
+    var swiped = false;
+    Swipe.on(board, function (ev) {
+      if (ev.type !== "swipe") return;
+      swiped = true;
+      var h = s.a.indexOf(0);
+      var t = { L: h + 1, R: h - 1, U: h + 4, D: h - 4 }[ev.dir];
+      Puzzle15.slide(s, t);
+      paint();
+    });
+    board.addEventListener("click", function (e) {
+      if (!swiped) return;
+      e.preventDefault();
+      e.stopPropagation();
+      swiped = false;
+    }, true);
     document.getElementById("reset").onclick = function () { s = Puzzle15.start(); paint(); };
     paint();
   </script>

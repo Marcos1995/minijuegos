@@ -2,34 +2,32 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Pong</title>
   <link rel="stylesheet" href="../app.css">
 </head>
-<body>
+<body class="play">
   <header>
     <p><a href="../index.html">← Minijuegos</a></p>
     <h1>Pong</h1>
-    <p id="status" class="status" aria-live="polite">W/S o flechas. Tú a la izquierda.</p>
+    <p id="status" class="status" aria-live="polite">Arrastra el dedo para mover tu pala.</p>
     <div class="bar">
       <button type="button" id="reset">Nueva partida</button>
     </div>
   </header>
   <main>
     <canvas class="game" id="cv" width="320" height="240" role="img" aria-label="Pong"></canvas>
-    <div class="bar keys">
-      <button type="button" id="up">↑</button>
-      <button type="button" id="down">↓</button>
-    </div>
+    <p class="hint">Arrastra arriba y abajo. Teclado: W/S o flechas.</p>
   </main>
+  <script src="../js/swipe.js"></script>
   <script src="../js/pong.js"></script>
   <script>
     var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
-    var status = document.getElementById("status"), s = Pong.start(), up = false, down = false, t;
+    var status = document.getElementById("status"), s = Pong.start(), up = false, down = false, dragY = null, t;
     function draw() {
-      ctx.fillStyle = "#123";
+      ctx.fillStyle = "#0b1020";
       ctx.fillRect(0, 0, Pong.W, Pong.H);
-      ctx.fillStyle = "#eee";
+      ctx.fillStyle = "#f4efe6";
       ctx.fillRect(0, s.p1, Pong.PW, Pong.PH);
       ctx.fillRect(Pong.W - Pong.PW, s.p2, Pong.PW, Pong.PH);
       ctx.fillRect(s.x, s.y, Pong.BS, Pong.BS);
@@ -37,6 +35,7 @@
     }
     function loop() {
       Pong.step(s, up, down);
+      if (dragY != null) s.p1 = Math.max(0, Math.min(Pong.H - Pong.PH, dragY));
       draw();
       t = requestAnimationFrame(loop);
     }
@@ -48,10 +47,7 @@
       if (e.key === "ArrowUp" || e.key === "w" || e.key === "W") up = false;
       if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") down = false;
     });
-    document.getElementById("up").onpointerdown = function () { up = true; };
-    document.getElementById("down").onpointerdown = function () { down = true; };
-    document.getElementById("up").onpointerup = document.getElementById("up").onpointerleave = function () { up = false; };
-    document.getElementById("down").onpointerup = document.getElementById("down").onpointerleave = function () { down = false; };
+    Swipe.drag(cv, function (p) { dragY = p.y * Pong.H - Pong.PH / 2; });
     document.getElementById("reset").onclick = function () { s = Pong.start(); };
     loop();
   </script>

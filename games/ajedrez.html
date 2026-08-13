@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Ajedrez</title>
   <link rel="stylesheet" href="../app.css">
 </head>
-<body>
+<body class="play">
   <header>
     <p><a href="../index.html">← Minijuegos</a></p>
     <h1>Ajedrez</h1>
@@ -54,6 +54,7 @@
           if (d[r + "," + c]) b.classList.add("legal");
           var p = s.sq[r][c];
           b.textContent = p === "." ? "" : U[p];
+          if (p !== ".") b.classList.add(p === p.toUpperCase() ? "wpiece" : "bpiece");
           b.setAttribute("aria-label", files[c] + (8 - r) + (p !== "." ? " " + p : " vacía"));
           b.onclick = (function (r, c) { return function () { click(r, c); }; })(r, c);
           board.appendChild(b);

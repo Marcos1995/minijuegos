@@ -2,7 +2,7 @@
 
 Juegos en HTML, sin instalar nada. En el móvil: https://marcos1995.github.io/minijuegos/
 
-O abre `index.html` en el PC.
+O abre `index.html` en el PC. En 2048, snake, tetris y puzzle 15 se desliza el dedo; en pong, breakout e invasores se arrastra.
 
 Tablero: tres en raya, 4 en raya, damas, ajedrez, reversi, parchís.
 

@@ -2,46 +2,112 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101218">
   <title>Minijuegos</title>
   <link rel="stylesheet" href="app.css">
 </head>
-<body>
+<body class="hub">
   <header>
     <h1>Minijuegos</h1>
-    <p>HTML plano. Elige uno.</p>
+    <p class="lede">Toca una carta. En 2048, snake, tetris y puzzle, desliza el dedo sobre el tablero.</p>
   </header>
   <main>
     <h2>Tablero</h2>
-    <ul class="games">
-      <li><a href="games/tictactoe.html">Tres en raya</a></li>
-      <li><a href="games/cuatro.html">4 en raya</a></li>
-      <li><a href="games/damas.html">Damas</a></li>
-      <li><a href="games/ajedrez.html">Ajedrez</a></li>
-      <li><a href="games/reversi.html">Reversi</a></li>
-      <li><a href="games/parchis.html">Parchís</a></li>
-    </ul>
+    <div class="grid">
+      <a class="card" href="games/tictactoe.html">
+        <div class="shot shot-ttt" aria-hidden="true"><b>X</b><b></b><b>O</b><b></b><b>X</b><b></b><b>O</b><b></b><b></b></div>
+        <div class="card-meta"><strong>Tres en raya</strong><small>Tablero</small></div>
+      </a>
+      <a class="card" href="games/cuatro.html">
+        <div class="shot shot-c4" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b class="y"></b><b></b><b></b><b></b><b></b><b></b><b class="r"></b><b class="y"></b><b class="r"></b><b class="y"></b><b></b><b></b><b class="y"></b><b class="r"></b><b class="y"></b><b class="r"></b><b class="y"></b><b class="r"></b><b></b></div>
+        <div class="card-meta"><strong>4 en raya</strong><small>Tablero</small></div>
+      </a>
+      <a class="card" href="games/damas.html">
+        <div class="shot shot-damas" aria-hidden="true"><b></b><b><i class="dot"></i></b><b></b><b><i class="dot"></i></b><b><i class="dot"></i></b><b></b><b><i class="dot"></i></b><b></b><b></b><b><i class="dot w"></i></b><b></b><b><i class="dot w"></i></b><b><i class="dot w"></i></b><b></b><b><i class="dot w"></i></b><b></b></div>
+        <div class="card-meta"><strong>Damas</strong><small>Tablero</small></div>
+      </a>
+      <a class="card" href="games/ajedrez.html">
+        <div class="shot shot-chess" aria-hidden="true"><b>♜</b><b></b><b>♛</b><b>♚</b><b></b><b>♟</b><b>♞</b><b></b><b>♙</b><b></b><b>♘</b><b></b><b></b><b>♕</b><b></b><b>♔</b></div>
+        <div class="card-meta"><strong>Ajedrez</strong><small>Tablero</small></div>
+      </a>
+      <a class="card" href="games/reversi.html">
+        <div class="shot shot-reversi" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b><i class="w"></i></b><b><i></i></b><b></b><b></b><b><i></i></b><b><i class="w"></i></b><b></b><b></b><b></b><b></b><b></b></div>
+        <div class="card-meta"><strong>Reversi</strong><small>Tablero</small></div>
+      </a>
+      <a class="card" href="games/parchis.html">
+        <div class="shot shot-parchis" aria-hidden="true"><span></span></div>
+        <div class="card-meta"><strong>Parchís</strong><small>Tablero</small></div>
+      </a>
+    </div>
+
     <h2>Puzzle</h2>
-    <ul class="games">
-      <li><a href="games/buscaminas.html">Buscaminas</a></li>
-      <li><a href="games/g2048.html">2048</a></li>
-      <li><a href="games/memory.html">Memory</a></li>
-      <li><a href="games/ahorcado.html">Ahorcado</a></li>
-      <li><a href="games/puzzle15.html">Puzzle 15</a></li>
-      <li><a href="games/sudoku.html">Sudoku</a></li>
-      <li><a href="games/simon.html">Simon</a></li>
-      <li><a href="games/luces.html">Luces</a></li>
-    </ul>
+    <div class="grid">
+      <a class="card" href="games/buscaminas.html">
+        <div class="shot shot-mines" aria-hidden="true"><b></b><b class="open">1</b><b class="open"></b><b></b><b></b><b></b><b></b><b class="open">2</b><b class="open">1</b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div>
+        <div class="card-meta"><strong>Buscaminas</strong><small>Puzzle</small></div>
+      </a>
+      <a class="card" href="games/g2048.html">
+        <div class="shot shot-2048" aria-hidden="true"><b style="background:#eee4da">2</b><b style="background:#ede0c8">4</b><b></b><b></b><b></b><b style="background:#f2b179;color:#fff">8</b><b style="background:#f59563;color:#fff">16</b><b></b><b></b><b></b><b></b><b style="background:#edc22e;color:#fff">2048</b><b></b><b></b><b></b><b></b></div>
+        <div class="card-meta"><strong>2048</strong><small>Desliza</small></div>
+      </a>
+      <a class="card" href="games/memory.html">
+        <div class="shot shot-mem" aria-hidden="true"><b>★</b><b>?</b><b>♥</b><b>?</b><b>?</b><b>?</b><b>?</b><b>?</b></div>
+        <div class="card-meta"><strong>Memory</strong><small>Puzzle</small></div>
+      </a>
+      <a class="card" href="games/ahorcado.html">
+        <div class="shot shot-hang" aria-hidden="true"><span>C _ S A</span></div>
+        <div class="card-meta"><strong>Ahorcado</strong><small>Puzzle</small></div>
+      </a>
+      <a class="card" href="games/puzzle15.html">
+        <div class="shot shot-15" aria-hidden="true"><b>1</b><b>2</b><b>3</b><b>4</b><b>5</b><b>6</b><b>7</b><b>8</b><b>9</b><b>10</b><b>11</b><b>12</b><b>13</b><b>14</b><b class="z"></b><b>15</b></div>
+        <div class="card-meta"><strong>Puzzle 15</strong><small>Desliza</small></div>
+      </a>
+      <a class="card" href="games/sudoku.html">
+        <div class="shot shot-sudo" aria-hidden="true"><b>5</b><b>3</b><b></b><b></b><b>7</b><b></b><b></b><b></b><b></b><b>6</b><b></b><b></b><b>1</b><b>9</b><b>5</b><b></b><b></b><b></b><b></b><b>9</b><b>8</b><b></b><b></b><b></b><b></b><b>6</b><b></b><b>8</b><b></b><b></b><b></b><b>6</b><b></b><b></b><b></b><b>3</b><b>4</b><b></b><b></b><b>8</b><b></b><b>3</b><b></b><b></b><b>1</b><b>7</b><b></b><b></b><b></b><b>2</b><b></b><b></b><b></b><b>6</b><b></b><b>6</b><b></b><b></b><b></b><b></b><b>2</b><b>8</b><b></b><b></b><b></b><b>4</b><b>1</b><b>9</b><b></b><b></b><b>5</b><b></b><b></b><b></b><b></b><b>8</b><b></b><b></b><b>7</b><b>9</b></div>
+        <div class="card-meta"><strong>Sudoku</strong><small>Puzzle</small></div>
+      </a>
+      <a class="card" href="games/simon.html">
+        <div class="shot shot-simon" aria-hidden="true"><b></b><b></b><b></b><b></b></div>
+        <div class="card-meta"><strong>Simon</strong><small>Puzzle</small></div>
+      </a>
+      <a class="card" href="games/luces.html">
+        <div class="shot shot-luces" aria-hidden="true"><b class="on"></b><b></b><b class="on"></b><b></b><b></b><b></b><b class="on"></b><b class="on"></b><b></b><b class="on"></b><b class="on"></b><b></b><b></b><b class="on"></b><b></b><b></b><b></b><b class="on"></b><b></b><b></b><b></b><b class="on"></b><b></b><b class="on"></b><b></b></div>
+        <div class="card-meta"><strong>Luces</strong><small>Puzzle</small></div>
+      </a>
+    </div>
+
     <h2>Arcade</h2>
-    <ul class="games">
-      <li><a href="games/flappy.html">Flappy</a></li>
-      <li><a href="games/snake.html">Snake</a></li>
-      <li><a href="games/tetris.html">Tetris</a></li>
-      <li><a href="games/pong.html">Pong</a></li>
-      <li><a href="games/breakout.html">Breakout</a></li>
-      <li><a href="games/invasores.html">Invasores</a></li>
-      <li><a href="games/topo.html">Topo</a></li>
-    </ul>
+    <div class="grid">
+      <a class="card" href="games/flappy.html">
+        <div class="shot shot-flappy" aria-hidden="true"></div>
+        <div class="card-meta"><strong>Flappy</strong><small>Toca</small></div>
+      </a>
+      <a class="card" href="games/snake.html">
+        <div class="shot shot-snake" aria-hidden="true"><i style="left:18%;top:46%;width:46%"></i><i style="left:62%;top:46%;width:12px;background:#f5c518"></i></div>
+        <div class="card-meta"><strong>Snake</strong><small>Desliza</small></div>
+      </a>
+      <a class="card" href="games/tetris.html">
+        <div class="shot shot-tet" aria-hidden="true"><i style="left:30%;bottom:18%;background:#22d3ee"></i><i style="left:38%;bottom:18%;background:#22d3ee"></i><i style="left:46%;bottom:18%;background:#f43f5e"></i><i style="left:46%;bottom:26%;background:#f43f5e"></i><i style="left:54%;bottom:18%;background:#a78bfa"></i><i style="left:38%;bottom:26%;background:#fbbf24"></i></div>
+        <div class="card-meta"><strong>Tetris</strong><small>Desliza</small></div>
+      </a>
+      <a class="card" href="games/pong.html">
+        <div class="shot shot-pong" aria-hidden="true"><i style="position:absolute;left:48%;top:44%;width:8px;height:8px;background:#fff;border-radius:50%"></i></div>
+        <div class="card-meta"><strong>Pong</strong><small>Arrastra</small></div>
+      </a>
+      <a class="card" href="games/breakout.html">
+        <div class="shot shot-brk" aria-hidden="true"><i style="position:absolute;left:8%;top:18%;right:8%;height:10px;background:#f43f5e"></i><i style="position:absolute;left:8%;top:30%;right:8%;height:10px;background:#fbbf24"></i><i style="position:absolute;left:36%;bottom:16%;width:28%;height:8px;background:#fff"></i></div>
+        <div class="card-meta"><strong>Breakout</strong><small>Arrastra</small></div>
+      </a>
+      <a class="card" href="games/invasores.html">
+        <div class="shot shot-inv" aria-hidden="true"><i style="left:18%;top:22%"></i><i style="left:32%;top:22%"></i><i style="left:46%;top:22%"></i><i style="left:60%;top:22%"></i><i style="left:74%;top:22%"></i><i style="left:18%;top:36%"></i><i style="left:32%;top:36%"></i><i style="left:46%;top:36%"></i><i style="left:60%;top:36%"></i><i style="position:absolute;left:46%;bottom:14%;width:16px;height:8px;background:#f8fafc"></i></div>
+        <div class="card-meta"><strong>Invasores</strong><small>Arrastra</small></div>
+      </a>
+      <a class="card" href="games/topo.html">
+        <div class="shot shot-topo" aria-hidden="true"><b></b><b></b><b></b><b></b><b>🐹</b><b></b><b></b><b></b><b></b></div>
+        <div class="card-meta"><strong>Topo</strong><small>Toca</small></div>
+      </a>
+    </div>
   </main>
 </body>
 </html>

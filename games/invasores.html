@@ -2,27 +2,24 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Invasores</title>
   <link rel="stylesheet" href="../app.css">
 </head>
-<body>
+<body class="play">
   <header>
     <p><a href="../index.html">← Minijuegos</a></p>
     <h1>Invasores</h1>
-    <p id="status" class="status" aria-live="polite">Flechas y espacio para disparar.</p>
+    <p id="status" class="status" aria-live="polite">Arrastra para moverte. Toca para disparar.</p>
     <div class="bar">
       <button type="button" id="reset">Nueva partida</button>
     </div>
   </header>
   <main>
     <canvas class="game" id="cv" width="320" height="400" role="img" aria-label="Invasores"></canvas>
-    <div class="bar keys">
-      <button type="button" id="left">←</button>
-      <button type="button" id="fire">Disparo</button>
-      <button type="button" id="right">→</button>
-    </div>
+    <p class="hint">Arrastra y toca. Teclado: flechas y espacio.</p>
   </main>
+  <script src="../js/swipe.js"></script>
   <script src="../js/invasores.js"></script>
   <script>
     var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
@@ -58,11 +55,8 @@
       if (e.key === "ArrowLeft" || e.key === "a") left = false;
       if (e.key === "ArrowRight" || e.key === "d") right = false;
     });
-    document.getElementById("left").onpointerdown = function () { left = true; };
-    document.getElementById("right").onpointerdown = function () { right = true; };
-    document.getElementById("left").onpointerup = document.getElementById("left").onpointerleave = function () { left = false; };
-    document.getElementById("right").onpointerup = document.getElementById("right").onpointerleave = function () { right = false; };
-    document.getElementById("fire").onclick = function () { fire = true; };
+    Swipe.drag(cv, function (p) { s.px = Math.max(8, Math.min(Invasores.W - 24, p.x * Invasores.W - 10)); });
+    cv.addEventListener("pointerdown", function () { fire = true; });
     document.getElementById("reset").onclick = function () { s = Invasores.start(); loop(); };
     loop();
   </script>
