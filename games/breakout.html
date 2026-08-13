@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Breakout</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Breakout</h1>
+    <p id="status" class="status" aria-live="polite">Flechas o A/D. Rompe los ladrillos.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <canvas class="game" id="cv" width="320" height="400" role="img" aria-label="Breakout"></canvas>
+    <div class="bar keys">
+      <button type="button" id="left">←</button>
+      <button type="button" id="right">→</button>
+    </div>
+  </main>
+  <script src="../js/breakout.js"></script>
+  <script>
+    var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+    var status = document.getElementById("status"), s = Breakout.start(), left = false, right = false;
+    var COL = ["#d55", "#e83", "#dd5", "#5c5", "#5ad"];
+    function draw() {
+      ctx.fillStyle = "#123";
+      ctx.fillRect(0, 0, Breakout.W, Breakout.H);
+      s.bricks.forEach(function (br, i) {
+        if (!br.live) return;
+        ctx.fillStyle = COL[(i / 8) | 0];
+        ctx.fillRect(br.x + 1, br.y, Breakout.BW - 2, Breakout.BH);
+      });
+      ctx.fillStyle = "#eee";
+      ctx.fillRect(s.px, Breakout.H - 24, Breakout.PW, Breakout.PH);
+      ctx.fillRect(s.x, s.y, Breakout.BS, Breakout.BS);
+      status.textContent = s.dead ? ("Caíste. " + s.score) : (s.won ? ("Limpio. " + s.score) : ("Puntos: " + s.score));
+    }
+    function loop() {
+      Breakout.step(s, left, right);
+      draw();
+      if (!s.dead && !s.won) requestAnimationFrame(loop);
+    }
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") { left = true; e.preventDefault(); }
+      if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") { right = true; e.preventDefault(); }
+    });
+    document.addEventListener("keyup", function (e) {
+      if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") left = false;
+      if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") right = false;
+    });
+    document.getElementById("left").onpointerdown = function () { left = true; };
+    document.getElementById("right").onpointerdown = function () { right = true; };
+    document.getElementById("left").onpointerup = document.getElementById("left").onpointerleave = function () { left = false; };
+    document.getElementById("right").onpointerup = document.getElementById("right").onpointerleave = function () { right = false; };
+    document.getElementById("reset").onclick = function () { s = Breakout.start(); loop(); };
+    loop();
+  </script>
+</body>
+</html>

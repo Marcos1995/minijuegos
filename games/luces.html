@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Luces</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Luces</h1>
+    <p id="status" class="status">Apaga todas. Clic cruza vecinos.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <div id="board" class="board-5" role="grid" aria-label="Luces"></div>
+  </main>
+  <script src="../js/luces.js"></script>
+  <script>
+    var s = Luces.start();
+    var board = document.getElementById("board");
+    var status = document.getElementById("status");
+    function paint() {
+      board.innerHTML = "";
+      for (var i = 0; i < 25; i++) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "cell " + (s.b[i] ? "on" : "off");
+        b.setAttribute("aria-pressed", s.b[i] ? "true" : "false");
+        b.onclick = (function (i) { return function () { Luces.toggle(s, i); paint(); }; })(i);
+        board.appendChild(b);
+      }
+      status.textContent = Luces.won(s) ? "Todas apagadas." : "Clic en una luz.";
+    }
+    document.getElementById("reset").onclick = function () { s = Luces.start(); paint(); };
+    paint();
+  </script>
+</body>
+</html>

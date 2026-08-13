@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sudoku</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Sudoku</h1>
+    <p id="status" class="status">Clic en casilla y número.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <div id="board" class="board-9" role="grid" aria-label="Sudoku"></div>
+    <div class="bar keys" id="nums"></div>
+  </main>
+  <script src="../js/sudoku.js"></script>
+  <script>
+    var s = Sudoku.start(), sel = -1;
+    var board = document.getElementById("board");
+    var status = document.getElementById("status");
+    var nums = document.getElementById("nums");
+    for (var n = 1; n <= 9; n++) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = String(n);
+      b.onclick = (function (n) { return function () { put(n); }; })(n);
+      nums.appendChild(b);
+    }
+    var clr = document.createElement("button");
+    clr.type = "button";
+    clr.textContent = "Borrar";
+    clr.onclick = function () { put(0); };
+    nums.appendChild(clr);
+    function paint() {
+      var bad = Sudoku.conflicts(s);
+      board.innerHTML = "";
+      for (var i = 0; i < 81; i++) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "cell" + (s.g[i] ? " given" : "") + (bad[i] ? " bad" : "");
+        if (i === sel) b.classList.add("mark");
+        b.textContent = s.b[i] ? String(s.b[i]) : "";
+        var r = (i / 9) | 0, c = i % 9;
+        if (c === 2 || c === 5) b.style.borderRightWidth = "4px";
+        if (r === 2 || r === 5) b.style.borderBottomWidth = "4px";
+        b.onclick = (function (i) { return function () { sel = i; paint(); }; })(i);
+        board.appendChild(b);
+      }
+      status.textContent = Sudoku.won(s) ? "Completado." : "Clic casilla, luego número.";
+    }
+    function put(n) {
+      if (sel < 0) return;
+      Sudoku.set(s, sel, n);
+      paint();
+    }
+    document.addEventListener("keydown", function (e) {
+      if (e.key >= "1" && e.key <= "9") put(+e.key);
+      if (e.key === "Backspace" || e.key === "0" || e.key === "Delete") put(0);
+    });
+    document.getElementById("reset").onclick = function () { s = Sudoku.start(); sel = -1; paint(); };
+    paint();
+  </script>
+</body>
+</html>

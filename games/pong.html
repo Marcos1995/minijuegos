@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pong</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Pong</h1>
+    <p id="status" class="status" aria-live="polite">W/S o flechas. Tú a la izquierda.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <canvas class="game" id="cv" width="320" height="240" role="img" aria-label="Pong"></canvas>
+    <div class="bar keys">
+      <button type="button" id="up">↑</button>
+      <button type="button" id="down">↓</button>
+    </div>
+  </main>
+  <script src="../js/pong.js"></script>
+  <script>
+    var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+    var status = document.getElementById("status"), s = Pong.start(), up = false, down = false, t;
+    function draw() {
+      ctx.fillStyle = "#123";
+      ctx.fillRect(0, 0, Pong.W, Pong.H);
+      ctx.fillStyle = "#eee";
+      ctx.fillRect(0, s.p1, Pong.PW, Pong.PH);
+      ctx.fillRect(Pong.W - Pong.PW, s.p2, Pong.PW, Pong.PH);
+      ctx.fillRect(s.x, s.y, Pong.BS, Pong.BS);
+      status.textContent = s.s1 + " — " + s.s2;
+    }
+    function loop() {
+      Pong.step(s, up, down);
+      draw();
+      t = requestAnimationFrame(loop);
+    }
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowUp" || e.key === "w" || e.key === "W") { up = true; e.preventDefault(); }
+      if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") { down = true; e.preventDefault(); }
+    });
+    document.addEventListener("keyup", function (e) {
+      if (e.key === "ArrowUp" || e.key === "w" || e.key === "W") up = false;
+      if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") down = false;
+    });
+    document.getElementById("up").onpointerdown = function () { up = true; };
+    document.getElementById("down").onpointerdown = function () { down = true; };
+    document.getElementById("up").onpointerup = document.getElementById("up").onpointerleave = function () { up = false; };
+    document.getElementById("down").onpointerup = document.getElementById("down").onpointerleave = function () { down = false; };
+    document.getElementById("reset").onclick = function () { s = Pong.start(); };
+    loop();
+  </script>
+</body>
+</html>

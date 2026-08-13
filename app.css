@@ -89,3 +89,31 @@ canvas#flappy {
   border: 2px solid var(--line);
 }
 .hint { color: var(--muted); font-size: 0.92rem; }
+h2 { font-size: 1.05rem; margin: 1.2rem 0 0.2rem; }
+.board-4 { grid-template-columns: repeat(4, 1fr); }
+.board-5 { grid-template-columns: repeat(5, 1fr); }
+.board-6 { grid-template-columns: repeat(6, 1fr); }
+.board-7 { grid-template-columns: repeat(7, 1fr); }
+.board-9 { grid-template-columns: repeat(9, 1fr); width: min(96vw, 28rem); }
+.board-4, .board-5, .board-6, .board-7, .board-9 {
+  display: grid;
+  gap: 0;
+  width: min(92vw, 28rem);
+  margin: 0.5rem 0;
+}
+canvas.game {
+  display: block;
+  width: min(92vw, 24rem);
+  height: auto;
+  background: #123;
+  border: 2px solid var(--line);
+}
+.keys button { min-width: 2.6rem; font-size: 1.1rem; }
+.simon { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; width: min(92vw, 18rem); }
+.simon button { min-height: 5rem; font-size: 1.2rem; }
+.alpha { display: flex; flex-wrap: wrap; gap: 0.25rem; max-width: 28rem; }
+.alpha button { min-width: 2rem; }
+.given { background: #ddd; font-weight: 700; }
+.bad { background: #f7c4c4; }
+.on { background: #c48a00; }
+.off { background: #334; color: #eee; }

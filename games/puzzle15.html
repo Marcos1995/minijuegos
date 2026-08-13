@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Puzzle 15</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Puzzle 15</h1>
+    <p id="status" class="status">Ordena 1–15.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <div id="board" class="board-4" role="grid" aria-label="Puzzle 15"></div>
+  </main>
+  <script src="../js/puzzle15.js"></script>
+  <script>
+    var s = Puzzle15.start();
+    var board = document.getElementById("board");
+    var status = document.getElementById("status");
+    function paint() {
+      board.innerHTML = "";
+      var legal = {};
+      Puzzle15.moves(s).forEach(function (i) { legal[i] = 1; });
+      for (var i = 0; i < 16; i++) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "cell";
+        b.textContent = s.a[i] ? String(s.a[i]) : "";
+        b.disabled = !s.a[i] || Puzzle15.won(s);
+        if (legal[i]) b.classList.add("legal");
+        b.onclick = (function (i) { return function () { Puzzle15.slide(s, i); paint(); }; })(i);
+        board.appendChild(b);
+      }
+      status.textContent = Puzzle15.won(s) ? "Ordenado." : "Clic en una ficha junto al hueco.";
+    }
+    document.getElementById("reset").onclick = function () { s = Puzzle15.start(); paint(); };
+    paint();
+  </script>
+</body>
+</html>

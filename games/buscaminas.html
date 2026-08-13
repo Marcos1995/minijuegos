@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Buscaminas</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Buscaminas</h1>
+    <p id="status" class="status">Clic abre. Marca minas con el modo bandera.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+      <label><input type="checkbox" id="flag"> Modo bandera</label>
+    </div>
+  </header>
+  <main>
+    <div id="board" class="board-9" role="grid" aria-label="Buscaminas"></div>
+  </main>
+  <script src="../js/buscaminas.js"></script>
+  <script>
+    var s = Buscaminas.start();
+    var board = document.getElementById("board");
+    var status = document.getElementById("status");
+    function paint() {
+      board.innerHTML = "";
+      for (var i = 0; i < s.w * s.h; i++) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "cell light";
+        var opened = s.open[i];
+        if (s.flag[i] && !opened) b.textContent = "⚑";
+        else if (opened) {
+          if (s.mines && s.mines[i]) b.textContent = "✱";
+          else {
+            var n = Buscaminas.around(s, i);
+            b.textContent = n ? String(n) : "";
+          }
+        }
+        b.disabled = s.dead || s.win;
+        b.setAttribute("aria-label", "casilla " + (i + 1));
+        b.onclick = (function (i) { return function () { click(i); }; })(i);
+        b.oncontextmenu = (function (i) {
+          return function (e) { e.preventDefault(); Buscaminas.toggleFlag(s, i); paint(); };
+        })(i);
+        board.appendChild(b);
+      }
+      if (s.dead) status.textContent = "Boom. Nueva partida para repetir.";
+      else if (s.win) status.textContent = "Limpio. Ganaste.";
+      else status.textContent = "Clic abre. Derecho o modo bandera marca.";
+    }
+    function click(i) {
+      if (document.getElementById("flag").checked) Buscaminas.toggleFlag(s, i);
+      else Buscaminas.openAt(s, i);
+      paint();
+    }
+    document.getElementById("reset").onclick = function () { s = Buscaminas.start(); paint(); };
+    paint();
+  </script>
+</body>
+</html>

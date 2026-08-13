@@ -11,10 +11,26 @@
   <script src="js/ajedrez.js"></script>
   <script src="js/parchis.js"></script>
   <script src="js/flappy.js"></script>
+  <script src="js/cuatro.js"></script>
+  <script src="js/reversi.js"></script>
+  <script src="js/buscaminas.js"></script>
+  <script src="js/snake.js"></script>
+  <script src="js/g2048.js"></script>
+  <script src="js/tetris.js"></script>
+  <script src="js/pong.js"></script>
+  <script src="js/breakout.js"></script>
+  <script src="js/memory.js"></script>
+  <script src="js/ahorcado.js"></script>
+  <script src="js/puzzle15.js"></script>
+  <script src="js/simon.js"></script>
+  <script src="js/sudoku.js"></script>
+  <script src="js/invasores.js"></script>
+  <script src="js/luces.js"></script>
+  <script src="js/topo.js"></script>
   <script src="js/check.js"></script>
   <script>
     var el = document.getElementById("out");
-    try { el.textContent = runChecks(TicTacToe, Damas, Ajedrez, Parchis, Flappy); }
+    try { el.textContent = runChecks(window); }
     catch (e) { el.textContent = String(e && e.message ? e.message : e); }
   </script>
 </body>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reversi</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Reversi</h1>
+    <p id="status" class="status">Negras empiezan.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+      <label><input type="checkbox" id="ai" checked> Máquina (blancas)</label>
+    </div>
+  </header>
+  <main>
+    <div id="board" class="board-8" role="grid" aria-label="Reversi"></div>
+  </main>
+  <script src="../js/reversi.js"></script>
+  <script>
+    var s = Reversi.start();
+    var board = document.getElementById("board");
+    var status = document.getElementById("status");
+    function say() {
+      var c = Reversi.count(s.b);
+      if (!s.turn) status.textContent = "Fin. Negras " + c.black + " — Blancas " + c.white;
+      else status.textContent = (s.turn === 1 ? "Negras" : "Blancas") + ". " + c.black + "–" + c.white;
+    }
+    function paint() {
+      var legal = {};
+      Reversi.moves(s).forEach(function (m) { legal[m[0] + "," + m[1]] = 1; });
+      board.innerHTML = "";
+      for (var r = 0; r < 8; r++) {
+        for (var c = 0; c < 8; c++) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "cell " + ((r + c) % 2 ? "dark" : "light");
+          if (legal[r + "," + c]) b.classList.add("legal");
+          if (s.b[r][c]) {
+            var t = document.createElement("span");
+            t.className = "tok " + (s.b[r][c] === 1 ? "g" : "y");
+            b.appendChild(t);
+          }
+          b.setAttribute("aria-label", "fila " + (r + 1) + " columna " + (c + 1));
+          b.onclick = (function (r, c) { return function () { put(r, c); }; })(r, c);
+          board.appendChild(b);
+        }
+      }
+      say();
+    }
+    function aiTurn() {
+      if (!document.getElementById("ai").checked || s.turn !== -1) return;
+      var m = Reversi.greedy(s);
+      if (m) s = Reversi.play(s, m[0], m[1]) || s;
+      paint();
+      if (s.turn === -1) setTimeout(aiTurn, 80);
+    }
+    function put(r, c) {
+      if (document.getElementById("ai").checked && s.turn !== 1) return;
+      var n = Reversi.play(s, r, c);
+      if (!n) return;
+      s = n;
+      paint();
+      setTimeout(aiTurn, 50);
+    }
+    document.getElementById("reset").onclick = function () { s = Reversi.start(); paint(); };
+    paint();
+  </script>
+</body>
+</html>

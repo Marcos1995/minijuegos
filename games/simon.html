@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simon</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Simon</h1>
+    <p id="status" class="status">Repite la secuencia.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <div class="simon" id="pads">
+      <button type="button" data-c="0" style="background:#0d6b3c;color:#fff">Verde</button>
+      <button type="button" data-c="1" style="background:#9b1c1c;color:#fff">Rojo</button>
+      <button type="button" data-c="2" style="background:#c48a00;color:#111">Amarillo</button>
+      <button type="button" data-c="3" style="background:#0b5cab;color:#fff">Azul</button>
+    </div>
+  </main>
+  <script src="../js/simon.js"></script>
+  <script>
+    var s = Simon.start();
+    var status = document.getElementById("status");
+    var pads = document.querySelectorAll("#pads button");
+    var playing = false;
+    function flash(i) {
+      var b = pads[i], old = b.style.opacity;
+      b.style.opacity = "0.4";
+      setTimeout(function () { b.style.opacity = old || "1"; }, 280);
+    }
+    function showSeq(cb) {
+      playing = true;
+      status.textContent = "Mira…";
+      var k = 0;
+      function step() {
+        if (k >= s.seq.length) { playing = false; status.textContent = "Tu turno. Ronda " + s.seq.length; return; }
+        flash(s.seq[k]);
+        k++;
+        setTimeout(step, 520);
+      }
+      setTimeout(step, 400);
+    }
+    function round() {
+      Simon.next(s);
+      showSeq();
+    }
+    pads.forEach(function (b) {
+      b.onclick = function () {
+        if (playing || s.dead) return;
+        var c = +b.getAttribute("data-c");
+        flash(c);
+        var n = Simon.press(s, c);
+        s = n;
+        if (s.dead) { status.textContent = "Fallaste. Ronda " + s.score; return; }
+        if (s.done) { s.done = false; status.textContent = "Bien. " + s.score; setTimeout(round, 600); }
+      };
+    });
+    document.getElementById("reset").onclick = function () { s = Simon.start(); round(); };
+    round();
+  </script>
+</body>
+</html>

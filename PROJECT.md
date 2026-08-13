@@ -21,13 +21,8 @@
 
 ## Fases (todas)
 
-0. Rules + docs (este archivo, README, `.cursor/rules/minijuegos.mdc`)
-1. Hub
-2. Tres en raya + minimax perfecto
-3. Damas (inglesas 8x8) + negamax
-4. Ajedrez + negamax (máquina de contar)
-5. Parchís simplificado 2 jugadores
-6. Flappy Bird (canvas)
+0–6. Hub + raya, damas, ajedrez, parchís, flappy (hechas)
+7. Más típicos: 4 en raya, reversi, buscaminas, snake, 2048, tetris, pong, breakout, memory, ahorcado, puzzle 15, sudoku, simon, luces, invasores, topo
 
 ## Máquina de contar (ajedrez / damas)
 

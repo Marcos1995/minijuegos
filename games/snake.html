@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snake</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Snake</h1>
+    <p id="status" class="status" aria-live="polite">Flechas o WASD.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <canvas class="game" id="cv" width="320" height="320" role="img" aria-label="Snake"></canvas>
+    <div class="bar keys">
+      <button type="button" data-d="U">↑</button>
+      <button type="button" data-d="L">←</button>
+      <button type="button" data-d="D">↓</button>
+      <button type="button" data-d="R">→</button>
+    </div>
+  </main>
+  <script src="../js/snake.js"></script>
+  <script>
+    var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+    var status = document.getElementById("status"), s = Snake.start(), t;
+    var map = { ArrowLeft: "L", ArrowRight: "R", ArrowUp: "U", ArrowDown: "D", a: "L", d: "R", w: "U", s: "D" };
+    function draw() {
+      var cs = 20;
+      ctx.fillStyle = "#123";
+      ctx.fillRect(0, 0, 320, 320);
+      ctx.fillStyle = "#c48a00";
+      if (s.food) ctx.fillRect(s.food.x * cs, s.food.y * cs, cs - 1, cs - 1);
+      for (var i = 0; i < s.body.length; i++) {
+        ctx.fillStyle = i ? "#0d6b3c" : "#7dcf9a";
+        ctx.fillRect(s.body[i].x * cs, s.body[i].y * cs, cs - 1, cs - 1);
+      }
+      status.textContent = s.dead ? ("Chocó. Puntos: " + s.score) : ("Puntos: " + s.score);
+    }
+    function loop() {
+      Snake.step(s);
+      draw();
+      if (!s.dead) t = setTimeout(loop, 120);
+    }
+    function go(d) { Snake.turn(s, d); }
+    document.addEventListener("keydown", function (e) {
+      var d = map[e.key] || map[e.key.toLowerCase()];
+      if (!d) return;
+      e.preventDefault();
+      go(d);
+    });
+    document.querySelectorAll("[data-d]").forEach(function (b) {
+      b.onclick = function () { go(b.getAttribute("data-d")); };
+    });
+    document.getElementById("reset").onclick = function () { clearTimeout(t); s = Snake.start(); loop(); };
+    loop();
+  </script>
+</body>
+</html>

@@ -1,12 +1,12 @@
 # Minijuegos
 
-Cinco juegos en HTML, sin instalar nada. Abre `index.html` en el navegador.
+Juegos en HTML, sin instalar nada. Abre `index.html`.
 
-- **Tres en raya** — contra máquina (minimax).
-- **Damas** — variante inglesa 8×8, capturas obligatorias, contra máquina.
-- **Ajedrez** — reglas normales (enroque, al paso, coronación a dama). Negras = máquina de contar (negamax, profundidad 3).
-- **Parchís** — 2 jugadores, recorrido 40, salís con 5. Máquina greedy.
-- **Flappy** — clic / espacio / toque.
+Tablero: tres en raya, 4 en raya, damas, ajedrez, reversi, parchís.
+
+Puzzle: buscaminas, 2048, memory, ahorcado, puzzle 15, sudoku, simon, luces.
+
+Arcade: flappy, snake, tetris, pong, breakout, invasores, topo.
 
 ```bash
 python -m http.server 8080
@@ -15,10 +15,10 @@ python -m http.server 8080
 
 ## Máquina de contar
 
-En ajedrez y damas la IA no usa redes: genera todas las jugadas, cuenta posiciones unos plies adelante y se queda con la que peor le deja al rival. Detalle en `PROJECT.md`.
+En ajedrez, damas y 4 en raya la IA enumera jugadas y elige el peor caso del rival. Reversi usa greedy (más fichas). Detalle en `PROJECT.md`.
 
 ## Docs
 
-- `PROJECT.md` — fases, stack, techos de la IA
+- `PROJECT.md` — stack y techos
 - `AGENTS.md` — Ponytail
 - `.cursor/rules/minijuegos.mdc` — cómo añadir un juego

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>4 en raya</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>4 en raya</h1>
+    <p id="status" class="status">Clic en una columna.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+      <label><input type="checkbox" id="ai" checked> Máquina</label>
+    </div>
+  </header>
+  <main>
+    <div id="board" class="board-7" role="grid" aria-label="4 en raya"></div>
+  </main>
+  <script src="../js/cuatro.js"></script>
+  <script>
+    var s = Cuatro.start();
+    var board = document.getElementById("board");
+    var status = document.getElementById("status");
+    function say() {
+      var w = Cuatro.winner(s.b);
+      if (w === 1) status.textContent = "Ganas tú";
+      else if (w === -1) status.textContent = "Gana la máquina";
+      else if (w === 2) status.textContent = "Tablas";
+      else status.textContent = s.turn === 1 ? "Tu turno. Clic en columna." : "Piensa…";
+    }
+    function paint() {
+      board.innerHTML = "";
+      for (var r = 0; r < Cuatro.R; r++) {
+        for (var c = 0; c < Cuatro.C; c++) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "cell " + ((r + c) % 2 ? "dark" : "light");
+          b.setAttribute("aria-label", "columna " + (c + 1));
+          if (s.b[r][c]) {
+            var t = document.createElement("span");
+            t.className = "tok " + (s.b[r][c] === 1 ? "y" : "g");
+            b.appendChild(t);
+          }
+          b.onclick = (function (c) { return function () { drop(c); }; })(c);
+          board.appendChild(b);
+        }
+      }
+      say();
+    }
+    function aiTurn() {
+      if (!document.getElementById("ai").checked) return;
+      if (Cuatro.winner(s.b) || s.turn !== -1) return;
+      var n = Cuatro.play(s, Cuatro.bestMove(s));
+      if (n) s = n;
+      paint();
+    }
+    function drop(c) {
+      if (document.getElementById("ai").checked && s.turn !== 1) return;
+      var n = Cuatro.play(s, c);
+      if (!n) return;
+      s = n;
+      paint();
+      setTimeout(aiTurn, 50);
+    }
+    document.getElementById("reset").onclick = function () { s = Cuatro.start(); paint(); };
+    paint();
+  </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Topo</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Topo</h1>
+    <p id="status" class="status" aria-live="polite">Golpea al topo. 5 fallos y se acaba.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <div id="board" class="board-3" role="grid" aria-label="Topo"></div>
+  </main>
+  <script src="../js/topo.js"></script>
+  <script>
+    var s = Topo.start();
+    var board = document.getElementById("board");
+    var status = document.getElementById("status");
+    var t;
+    function paint() {
+      board.innerHTML = "";
+      for (var i = 0; i < 9; i++) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "cell";
+        b.textContent = i === s.up ? "🐹" : "·";
+        b.setAttribute("aria-label", i === s.up ? "topo" : "agujero");
+        b.disabled = s.dead;
+        b.onclick = (function (i) { return function () { Topo.hit(s, i); paint(); }; })(i);
+        board.appendChild(b);
+      }
+      status.textContent = s.dead ? ("Fin. Puntos " + s.score) : ("Puntos " + s.score + " · fallos " + s.miss);
+    }
+    function loop() {
+      Topo.step(s);
+      paint();
+      if (!s.dead) t = setTimeout(loop, 90);
+    }
+    document.getElementById("reset").onclick = function () { clearTimeout(t); s = Topo.start(); loop(); };
+    loop();
+  </script>
+</body>
+</html>

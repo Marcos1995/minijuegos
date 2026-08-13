@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tetris</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Tetris</h1>
+    <p id="status" class="status" aria-live="polite">Flechas, arriba rota, espacio cae.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <canvas class="game" id="cv" width="200" height="400" role="img" aria-label="Tetris"></canvas>
+    <div class="bar keys">
+      <button type="button" id="left">←</button>
+      <button type="button" id="rot">↻</button>
+      <button type="button" id="right">→</button>
+      <button type="button" id="drop">↓↓</button>
+    </div>
+  </main>
+  <script src="../js/tetris.js"></script>
+  <script>
+    var COL = ["#123", "#5ad", "#dd5", "#a5d", "#36c", "#e83", "#5c5", "#d55"];
+    var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+    var status = document.getElementById("status"), s = Tetris.start(), t;
+    function draw() {
+      var cs = 20, x, y, i, cells;
+      ctx.fillStyle = "#123";
+      ctx.fillRect(0, 0, 200, 400);
+      for (y = 0; y < Tetris.H; y++)
+        for (x = 0; x < Tetris.W; x++)
+          if (s.b[y][x]) {
+            ctx.fillStyle = COL[s.b[y][x]];
+            ctx.fillRect(x * cs, y * cs, cs - 1, cs - 1);
+          }
+      cells = Tetris.cells(s.p);
+      ctx.fillStyle = COL[s.p.id];
+      for (i = 0; i < cells.length; i++) {
+        if (cells[i][1] < 0) continue;
+        ctx.fillRect(cells[i][0] * cs, cells[i][1] * cs, cs - 1, cs - 1);
+      }
+      status.textContent = s.dead ? ("Fin. " + s.score) : ("Puntos " + s.score + " · líneas " + s.lines);
+    }
+    function loop() {
+      Tetris.tick(s);
+      draw();
+      if (!s.dead) t = setTimeout(loop, 500);
+    }
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") { Tetris.move(s, -1); e.preventDefault(); }
+      if (e.key === "ArrowRight") { Tetris.move(s, 1); e.preventDefault(); }
+      if (e.key === "ArrowDown") { Tetris.tick(s); e.preventDefault(); }
+      if (e.key === "ArrowUp") { Tetris.rotate(s); e.preventDefault(); }
+      if (e.key === " ") { Tetris.hard(s); e.preventDefault(); }
+      draw();
+    });
+    document.getElementById("left").onclick = function () { Tetris.move(s, -1); draw(); };
+    document.getElementById("right").onclick = function () { Tetris.move(s, 1); draw(); };
+    document.getElementById("rot").onclick = function () { Tetris.rotate(s); draw(); };
+    document.getElementById("drop").onclick = function () { Tetris.hard(s); draw(); };
+    document.getElementById("reset").onclick = function () { clearTimeout(t); s = Tetris.start(); loop(); };
+    loop();
+  </script>
+</body>
+</html>

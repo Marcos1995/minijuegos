@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Memory</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Memory</h1>
+    <p id="status" class="status">Encuentra las parejas.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <div id="board" class="board-4" role="grid" aria-label="Memory"></div>
+  </main>
+  <script src="../js/memory.js"></script>
+  <script>
+    var s = Memory.start();
+    var board = document.getElementById("board");
+    var status = document.getElementById("status");
+    function paint() {
+      board.innerHTML = "";
+      for (var i = 0; i < s.deck.length; i++) {
+        var show = s.matched[i] || i === s.open[0] || i === s.open[1];
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "cell";
+        b.textContent = show ? s.deck[i] : "?";
+        b.disabled = !!s.matched[i] || s.locked;
+        b.setAttribute("aria-label", show ? s.deck[i] : "oculta");
+        b.onclick = (function (i) { return function () { click(i); }; })(i);
+        board.appendChild(b);
+      }
+      status.textContent = Memory.won(s) ? ("Ganaste en " + s.moves + " intentos") : (s.moves + " intentos");
+    }
+    function click(i) {
+      Memory.flip(s, i);
+      paint();
+      if (s.locked) setTimeout(function () { Memory.hide(s); paint(); }, 650);
+    }
+    document.getElementById("reset").onclick = function () { s = Memory.start(); paint(); };
+    paint();
+  </script>
+</body>
+</html>

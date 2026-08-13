@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invasores</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Invasores</h1>
+    <p id="status" class="status" aria-live="polite">Flechas y espacio para disparar.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <canvas class="game" id="cv" width="320" height="400" role="img" aria-label="Invasores"></canvas>
+    <div class="bar keys">
+      <button type="button" id="left">←</button>
+      <button type="button" id="fire">Disparo</button>
+      <button type="button" id="right">→</button>
+    </div>
+  </main>
+  <script src="../js/invasores.js"></script>
+  <script>
+    var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+    var status = document.getElementById("status"), s = Invasores.start();
+    var left = false, right = false, fire = false;
+    function draw() {
+      ctx.fillStyle = "#123";
+      ctx.fillRect(0, 0, Invasores.W, Invasores.H);
+      ctx.fillStyle = "#7dcf9a";
+      s.aliens.forEach(function (a) {
+        if (a.live) ctx.fillRect(a.x, a.y, 16, 12);
+      });
+      ctx.fillStyle = "#eee";
+      ctx.fillRect(s.px, Invasores.H - 28, 20, 10);
+      ctx.fillStyle = "#edc22e";
+      s.bullets.forEach(function (b) { ctx.fillRect(b.x, b.y, 2, 8); });
+      ctx.fillStyle = "#d55";
+      s.ab.forEach(function (b) { ctx.fillRect(b.x, b.y, 2, 8); });
+      status.textContent = s.dead ? ("Te dieron. " + s.score) : (s.won ? ("Oleada limpia. " + s.score) : ("Puntos: " + s.score));
+    }
+    function loop() {
+      Invasores.step(s, left, right, fire);
+      fire = false;
+      draw();
+      if (!s.dead && !s.won) requestAnimationFrame(loop);
+    }
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft" || e.key === "a") { left = true; e.preventDefault(); }
+      if (e.key === "ArrowRight" || e.key === "d") { right = true; e.preventDefault(); }
+      if (e.key === " ") { fire = true; e.preventDefault(); }
+    });
+    document.addEventListener("keyup", function (e) {
+      if (e.key === "ArrowLeft" || e.key === "a") left = false;
+      if (e.key === "ArrowRight" || e.key === "d") right = false;
+    });
+    document.getElementById("left").onpointerdown = function () { left = true; };
+    document.getElementById("right").onpointerdown = function () { right = true; };
+    document.getElementById("left").onpointerup = document.getElementById("left").onpointerleave = function () { left = false; };
+    document.getElementById("right").onpointerup = document.getElementById("right").onpointerleave = function () { right = false; };
+    document.getElementById("fire").onclick = function () { fire = true; };
+    document.getElementById("reset").onclick = function () { s = Invasores.start(); loop(); };
+    loop();
+  </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2048</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>2048</h1>
+    <p id="status" class="status">Flechas o botones.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <div id="board" class="board-4" role="grid" aria-label="2048"></div>
+    <div class="bar keys">
+      <button type="button" data-d="1">↑</button>
+      <button type="button" data-d="0">←</button>
+      <button type="button" data-d="3">↓</button>
+      <button type="button" data-d="2">→</button>
+    </div>
+  </main>
+  <script src="../js/g2048.js"></script>
+  <script>
+    var COL = { 0: "#cdc1b4", 2: "#eee4da", 4: "#ede0c8", 8: "#f2b179", 16: "#f59563", 32: "#f67c5f", 64: "#f65e3b", 128: "#edcf72", 256: "#edcc61", 512: "#edc850", 1024: "#edc53f", 2048: "#edc22e" };
+    var s = G2048.start();
+    var board = document.getElementById("board");
+    var status = document.getElementById("status");
+    function paint() {
+      board.innerHTML = "";
+      for (var i = 0; i < 16; i++) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "cell";
+        b.style.background = COL[s.b[i]] || "#edc22e";
+        b.style.fontWeight = "700";
+        b.textContent = s.b[i] ? String(s.b[i]) : "";
+        b.disabled = true;
+        board.appendChild(b);
+      }
+      if (s.dead) status.textContent = "Sin movimientos. " + s.score + " puntos.";
+      else status.textContent = (s.won ? "Llegaste a 2048. " : "") + s.score + " puntos.";
+    }
+    function go(d) { s = G2048.slide(s, +d); paint(); }
+    document.addEventListener("keydown", function (e) {
+      var m = { ArrowLeft: 0, ArrowUp: 1, ArrowRight: 2, ArrowDown: 3 };
+      if (m[e.key] === undefined) return;
+      e.preventDefault();
+      go(m[e.key]);
+    });
+    document.querySelectorAll("[data-d]").forEach(function (b) {
+      b.onclick = function () { go(b.getAttribute("data-d")); };
+    });
+    document.getElementById("reset").onclick = function () { s = G2048.start(); paint(); };
+    paint();
+  </script>
+</body>
+</html>

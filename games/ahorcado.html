@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ahorcado</title>
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <header>
+    <p><a href="../index.html">← Minijuegos</a></p>
+    <h1>Ahorcado</h1>
+    <p id="status" class="status">Adivina la palabra.</p>
+    <div class="bar">
+      <button type="button" id="reset">Nueva partida</button>
+    </div>
+  </header>
+  <main>
+    <p id="word" style="font-size:1.6rem;letter-spacing:0.35em;font-weight:700"></p>
+    <p id="lives"></p>
+    <div id="alpha" class="alpha"></div>
+  </main>
+  <script src="../js/ahorcado.js"></script>
+  <script>
+    var s = Ahorcado.start();
+    var letters = "abcdefghijklmnñopqrstuvwxyz";
+    function paint() {
+      document.getElementById("word").textContent = Ahorcado.mask(s).split("").join(" ");
+      document.getElementById("lives").textContent = Ahorcado.lost(s)
+        ? ("Era: " + s.w)
+        : (Ahorcado.won(s) ? "Ganaste" : ("Vidas: " + s.lives));
+      var box = document.getElementById("alpha");
+      box.innerHTML = "";
+      for (var i = 0; i < letters.length; i++) {
+        var ch = letters.charAt(i);
+        var b = document.createElement("button");
+        b.type = "button";
+        b.textContent = ch;
+        b.disabled = !!s.guessed[ch] || Ahorcado.won(s) || Ahorcado.lost(s);
+        b.onclick = (function (ch) { return function () { Ahorcado.guess(s, ch); paint(); }; })(ch);
+        box.appendChild(b);
+      }
+      document.getElementById("status").textContent = Ahorcado.lost(s) ? "Ahorcado." : "Elige letra o teclado.";
+    }
+    document.addEventListener("keydown", function (e) {
+      if (e.key && e.key.length === 1) { Ahorcado.guess(s, e.key); paint(); }
+    });
+    document.getElementById("reset").onclick = function () { s = Ahorcado.start(); paint(); };
+    paint();
+  </script>
+</body>
+</html>
