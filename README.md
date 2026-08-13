@@ -1,6 +1,8 @@
 # Minijuegos
 
-Juegos en HTML, sin instalar nada. Abre `index.html`.
+Juegos en HTML, sin instalar nada. En el móvil: https://marcos1995.github.io/minijuegos/
+
+O abre `index.html` en el PC.
 
 Tablero: tres en raya, 4 en raya, damas, ajedrez, reversi, parchís.
 

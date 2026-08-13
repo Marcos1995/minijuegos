@@ -2,8 +2,8 @@
 # Contexto del proyecto
 
 ## Produccion
-- URL: (estático; aún sin deploy)
-- Deploy: copiar la carpeta o Pages/Netlify sobre estos HTML
+- URL: https://marcos1995.github.io/minijuegos/
+- Deploy: GitHub Pages (rama main, carpeta /)
 
 ## Stack
 - HTML + CSS + JS en el navegador. Sin build, sin npm.
